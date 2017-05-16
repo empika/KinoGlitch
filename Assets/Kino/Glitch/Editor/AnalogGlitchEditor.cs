@@ -27,9 +27,10 @@ namespace Kino
 {
     [CanEditMultipleObjects]
     [CustomEditor(typeof(AnalogGlitch))]
-    public class AnalogGlitchEditor : Editor
+    public class AnalogGlitchEditor : UnityEditor.Editor
     {
         SerializedProperty _scanLineJitter;
+        SerializedProperty _scanLineJitterScale;
         SerializedProperty _verticalJump;
         SerializedProperty _horizontalShake;
         SerializedProperty _colorDrift;
@@ -37,6 +38,7 @@ namespace Kino
         void OnEnable()
         {
             _scanLineJitter = serializedObject.FindProperty("_scanLineJitter");
+            _scanLineJitterScale = serializedObject.FindProperty("_scanLineJitterScale");
             _verticalJump = serializedObject.FindProperty("_verticalJump");
             _horizontalShake = serializedObject.FindProperty("_horizontalShake");
             _colorDrift = serializedObject.FindProperty("_colorDrift");
@@ -47,6 +49,7 @@ namespace Kino
             serializedObject.Update();
 
             EditorGUILayout.PropertyField(_scanLineJitter);
+            EditorGUILayout.PropertyField(_scanLineJitterScale);
             EditorGUILayout.PropertyField(_verticalJump);
             EditorGUILayout.PropertyField(_horizontalShake);
             EditorGUILayout.PropertyField(_colorDrift);

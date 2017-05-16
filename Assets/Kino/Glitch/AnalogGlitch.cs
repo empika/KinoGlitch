@@ -41,6 +41,14 @@ namespace Kino
             set { _scanLineJitter = value; }
         }
 
+        [SerializeField, Range(0, 200)]
+        int _scanLineJitterScale = 0;
+
+        public int scanLineJitterScale {
+            get { return _scanLineJitterScale; }
+            set { _scanLineJitterScale = value; }
+        }
+
         // Vertical jump
 
         [SerializeField, Range(0, 1)]
@@ -87,17 +95,23 @@ namespace Kino
 
         void OnRenderImage(RenderTexture source, RenderTexture destination)
         {
+            if (_scanLineJitter == 0 && _verticalJump == 0 && _horizontalShake == 0 && _colorDrift == 0)
+            {
+                Graphics.Blit (source, destination);
+                return;
+            }
+
             if (_material == null)
             {
                 _material = new Material(_shader);
                 _material.hideFlags = HideFlags.DontSave;
             }
-
             _verticalJumpTime += Time.deltaTime * _verticalJump * 11.3f;
 
             var sl_thresh = Mathf.Clamp01(1.0f - _scanLineJitter * 1.2f);
             var sl_disp = 0.002f + Mathf.Pow(_scanLineJitter, 3) * 0.05f;
             _material.SetVector("_ScanLineJitter", new Vector2(sl_disp, sl_thresh));
+            _material.SetInt("_JitterPixelScale", _scanLineJitterScale);
 
             var vj = new Vector2(_verticalJump, _verticalJumpTime);
             _material.SetVector("_VerticalJump", vj);

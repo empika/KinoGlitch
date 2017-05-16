@@ -37,6 +37,7 @@ Shader "Hidden/Kino/Glitch/Analog"
     float2 _VerticalJump;   // (amount, time)
     float _HorizontalShake;
     float2 _ColorDrift;     // (amount, time)
+    int _JitterPixelScale = 1; // (Increase the line size of the _ScanLineJitter)
 
     float nrand(float x, float y)
     {
@@ -49,7 +50,11 @@ Shader "Hidden/Kino/Glitch/Analog"
         float v = i.uv.y;
 
         // Scan line jitter
-        float jitter = nrand(v, _Time.x) * 2 - 1;
+        float vv = v * (_ScreenParams.y / _JitterPixelScale);
+        vv = (int)vv;
+        vv = vv / (_ScreenParams.y / _JitterPixelScale);
+
+        float jitter = nrand(vv, _Time.x) * 2 - 1;
         jitter *= step(_ScanLineJitter.y, abs(jitter)) * _ScanLineJitter.x;
 
         // Vertical jump
